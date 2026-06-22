@@ -1,22 +1,27 @@
-import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import path from 'path';
-import connectDB from './db/index.js';
-import { app } from './app.js';
+import dotenv from 'dotenv';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Load env vars BEFORE any other imports that depend on them
 dotenv.config({
     path: path.resolve(__dirname, '../.env'),
 });
 
-connectDB()
-    .then(() => {
-        app.listen(process.env.PORT || 3000, () => {
-            console.log(`Server is running on port ${process.env.PORT || 3000}`);
-        });
-    })
-    .catch(error => {
-        console.error('Database connection failed:', error);
+// Now import modules that read process.env at load time
+import('./app.js').then(async ({ app }) => {
+    const { initPassport } = await import('./config/passport.js');
+    initPassport();
+
+    const { default: connectDB } = await import('./db/index.js');
+    await connectDB();
+
+    app.listen(process.env.PORT || 3000, () => {
+        console.log(`Server is running on port ${process.env.PORT || 3000}`);
     });
+}).catch(error => {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+});
