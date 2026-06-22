@@ -110,7 +110,9 @@ export const sendContactMessage = asyncHandler(async (req, res) => {
     await transporter.sendMail(ownerMailOptions);
     await transporter.sendMail(senderMailOptions);
 
-    return res.status(200).json(
-        new ApiResponse(200, null, 'Message sent successfully! I will get back to you soon.')
-    );
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, null, 'Message sent successfully! I will get back to you soon.')
+        );
 });

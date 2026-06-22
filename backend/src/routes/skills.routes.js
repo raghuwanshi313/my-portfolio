@@ -1,9 +1,5 @@
 import { Router } from 'express';
-import {
-    getSkills,
-    updateSkills,
-    deleteSkills,
-} from '../controllers/skills.controller.js';
+import { getSkills, updateSkills, deleteSkills } from '../controllers/skills.controller.js';
 import { verifyJWT, verifyAdmin } from '../middlewares/auth.middleware.js';
 
 const router = Router();

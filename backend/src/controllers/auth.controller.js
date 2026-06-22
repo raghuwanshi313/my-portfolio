@@ -42,7 +42,10 @@ const googleCallback = asyncHandler(async (req, res) => {
         const loggedInUser = await User.findById(req.user._id).select('-refreshToken');
 
         // Redirect to frontend with tokens
-        const frontendURL = process.env.FRONTEND_URL || 'http://localhost:5173';
+        const frontendURL = (process.env.FRONTEND_URL || 'http://localhost:5173').replace(
+            /\/$/,
+            ''
+        );
 
         return res
             .status(200)
@@ -50,8 +53,11 @@ const googleCallback = asyncHandler(async (req, res) => {
             .cookie('refreshToken', refreshToken, options)
             .redirect(`${frontendURL}/admin/dashboard?auth=success`);
     } catch (error) {
-        const frontendURL = process.env.FRONTEND_URL || 'http://localhost:5173';
-        return res.redirect(`${frontendURL}?auth=failed`);
+        const frontendURL = (process.env.FRONTEND_URL || 'http://localhost:5173').replace(
+            /\/$/,
+            ''
+        );
+        return res.redirect(`${frontendURL}/?auth=failed`);
     }
 });
 

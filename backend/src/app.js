@@ -20,9 +20,28 @@ const app = express();
 // Trust proxy - IMPORTANT for Render
 app.set('trust proxy', 1);
 
+const allowedOrigins = process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(',').map(o => o.trim().replace(/\/$/, ''))
+    : [];
+
 app.use(
     cors({
-        origin: process.env.CORS_ORIGIN,
+        origin: (origin, callback) => {
+            // Allow requests with no origin (like mobile apps, curl, postman)
+            if (!origin) return callback(null, true);
+
+            const normalizedOrigin = origin.replace(/\/$/, '');
+
+            if (
+                allowedOrigins.length === 0 ||
+                allowedOrigins.includes(normalizedOrigin) ||
+                allowedOrigins.includes('*')
+            ) {
+                callback(null, true);
+            } else {
+                callback(new Error('Not allowed by CORS'));
+            }
+        },
         credentials: true,
     })
 );

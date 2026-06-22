@@ -16,21 +16,9 @@ router.get('/', getAllExperiences);
 router.get('/:id', getExperienceById);
 
 // Protected routes (admin only)
-router.post(
-    '/',
-    verifyJWT,
-    verifyAdmin,
-    upload.single('company_logo'),
-    createExperience
-);
+router.post('/', verifyJWT, verifyAdmin, upload.single('company_logo'), createExperience);
 
-router.put(
-    '/:id',
-    verifyJWT,
-    verifyAdmin,
-    upload.single('company_logo'),
-    updateExperience
-);
+router.put('/:id', verifyJWT, verifyAdmin, upload.single('company_logo'), updateExperience);
 
 router.delete('/:id', verifyJWT, verifyAdmin, deleteExperience);
 

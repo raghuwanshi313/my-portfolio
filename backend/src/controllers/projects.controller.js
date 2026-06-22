@@ -8,9 +8,7 @@ import Project from '../models/projects.models.js';
 export const getAllProjects = asyncHandler(async (req, res) => {
     const projects = await Project.find().sort({ createdAt: -1 });
 
-    return res
-        .status(200)
-        .json(new ApiResponse(200, projects, 'Projects fetched successfully'));
+    return res.status(200).json(new ApiResponse(200, projects, 'Projects fetched successfully'));
 });
 
 // Get single project by ID (Public)
@@ -23,9 +21,7 @@ export const getProjectById = asyncHandler(async (req, res) => {
         throw new ApiError(404, 'Project not found');
     }
 
-    return res
-        .status(200)
-        .json(new ApiResponse(200, project, 'Project fetched successfully'));
+    return res.status(200).json(new ApiResponse(200, project, 'Project fetched successfully'));
 });
 
 // Create new project (Admin only)
@@ -74,9 +70,7 @@ export const createProject = asyncHandler(async (req, res) => {
         live_link: live_link || '',
     });
 
-    return res
-        .status(201)
-        .json(new ApiResponse(201, project, 'Project created successfully'));
+    return res.status(201).json(new ApiResponse(201, project, 'Project created successfully'));
 });
 
 // Update project (Admin only)
@@ -142,9 +136,7 @@ export const updateProject = asyncHandler(async (req, res) => {
 
     await project.save();
 
-    return res
-        .status(200)
-        .json(new ApiResponse(200, project, 'Project updated successfully'));
+    return res.status(200).json(new ApiResponse(200, project, 'Project updated successfully'));
 });
 
 // Delete project (Admin only)
@@ -172,7 +164,5 @@ export const deleteProject = asyncHandler(async (req, res) => {
 
     await Project.findByIdAndDelete(id);
 
-    return res
-        .status(200)
-        .json(new ApiResponse(200, {}, 'Project deleted successfully'));
+    return res.status(200).json(new ApiResponse(200, {}, 'Project deleted successfully'));
 });

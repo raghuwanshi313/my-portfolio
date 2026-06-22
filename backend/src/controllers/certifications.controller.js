@@ -175,7 +175,5 @@ export const deleteCertification = asyncHandler(async (req, res) => {
 
     await Certification.findByIdAndDelete(id);
 
-    return res
-        .status(200)
-        .json(new ApiResponse(200, {}, 'Certification deleted successfully'));
+    return res.status(200).json(new ApiResponse(200, {}, 'Certification deleted successfully'));
 });

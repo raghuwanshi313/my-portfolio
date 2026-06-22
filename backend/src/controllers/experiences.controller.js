@@ -7,25 +7,25 @@ import { uploadOnCloudinary } from '../utils/cloudinary.js';
 // Get all experiences
 export const getAllExperiences = asyncHandler(async (req, res) => {
     const experiences = await Experience.find().sort({ joining_date: -1 });
-    
-    return res.status(200).json(
-        new ApiResponse(200, experiences, 'Experiences retrieved successfully')
-    );
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, experiences, 'Experiences retrieved successfully'));
 });
 
 // Get experience by ID
 export const getExperienceById = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    
+
     const experience = await Experience.findById(id);
-    
+
     if (!experience) {
         throw new ApiError(404, 'Experience not found');
     }
-    
-    return res.status(200).json(
-        new ApiResponse(200, experience, 'Experience retrieved successfully')
-    );
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, experience, 'Experience retrieved successfully'));
 });
 
 // Create new experience
@@ -41,34 +41,32 @@ export const createExperience = asyncHandler(async (req, res) => {
         achievements,
         tech_stack,
     } = req.body;
-    
+
     // Validate required fields
     if (!company_name || !role || !joining_date || !description) {
         throw new ApiError(400, 'Please provide all required fields');
     }
-    
+
     let company_logo_url = null;
-    
+
     // Upload company logo if provided
     if (req.file) {
         const localPath = req.file.path;
         const cloudinaryResponse = await uploadOnCloudinary(localPath);
-        
+
         if (!cloudinaryResponse) {
             throw new ApiError(500, 'Failed to upload company logo');
         }
-        
+
         company_logo_url = cloudinaryResponse.secure_url;
     }
-    
+
     // Parse arrays if they come as strings
-    const parsedAchievements = typeof achievements === 'string' 
-        ? JSON.parse(achievements) 
-        : achievements || [];
-    const parsedTechStack = typeof tech_stack === 'string' 
-        ? JSON.parse(tech_stack) 
-        : tech_stack || [];
-    
+    const parsedAchievements =
+        typeof achievements === 'string' ? JSON.parse(achievements) : achievements || [];
+    const parsedTechStack =
+        typeof tech_stack === 'string' ? JSON.parse(tech_stack) : tech_stack || [];
+
     const experience = await Experience.create({
         company_name,
         company_logo: company_logo_url,
@@ -81,10 +79,10 @@ export const createExperience = asyncHandler(async (req, res) => {
         achievements: parsedAchievements,
         tech_stack: parsedTechStack,
     });
-    
-    return res.status(201).json(
-        new ApiResponse(201, experience, 'Experience created successfully')
-    );
+
+    return res
+        .status(201)
+        .json(new ApiResponse(201, experience, 'Experience created successfully'));
 });
 
 // Update experience
@@ -101,33 +99,30 @@ export const updateExperience = asyncHandler(async (req, res) => {
         achievements,
         tech_stack,
     } = req.body;
-    
+
     const experience = await Experience.findById(id);
-    
+
     if (!experience) {
         throw new ApiError(404, 'Experience not found');
     }
-    
+
     // Upload new company logo if provided
     if (req.file) {
         const localPath = req.file.path;
         const cloudinaryResponse = await uploadOnCloudinary(localPath);
-        
+
         if (!cloudinaryResponse) {
             throw new ApiError(500, 'Failed to upload company logo');
         }
-        
+
         experience.company_logo = cloudinaryResponse.secure_url;
     }
-    
+
     // Parse arrays if they come as strings
-    const parsedAchievements = typeof achievements === 'string' 
-        ? JSON.parse(achievements) 
-        : achievements;
-    const parsedTechStack = typeof tech_stack === 'string' 
-        ? JSON.parse(tech_stack) 
-        : tech_stack;
-    
+    const parsedAchievements =
+        typeof achievements === 'string' ? JSON.parse(achievements) : achievements;
+    const parsedTechStack = typeof tech_stack === 'string' ? JSON.parse(tech_stack) : tech_stack;
+
     // Update fields
     if (company_name) experience.company_name = company_name;
     if (role) experience.role = role;
@@ -145,25 +140,23 @@ export const updateExperience = asyncHandler(async (req, res) => {
     if (description) experience.description = description;
     if (parsedAchievements) experience.achievements = parsedAchievements;
     if (parsedTechStack) experience.tech_stack = parsedTechStack;
-    
+
     await experience.save();
-    
-    return res.status(200).json(
-        new ApiResponse(200, experience, 'Experience updated successfully')
-    );
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, experience, 'Experience updated successfully'));
 });
 
 // Delete experience
 export const deleteExperience = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    
+
     const experience = await Experience.findByIdAndDelete(id);
-    
+
     if (!experience) {
         throw new ApiError(404, 'Experience not found');
     }
-    
-    return res.status(200).json(
-        new ApiResponse(200, null, 'Experience deleted successfully')
-    );
+
+    return res.status(200).json(new ApiResponse(200, null, 'Experience deleted successfully'));
 });

@@ -10,33 +10,28 @@ export const getSkills = asyncHandler(async (req, res) => {
 
     if (!skills) {
         // If no skills document exists, return empty arrays
-        return res
-            .status(200)
-            .json(new ApiResponse(200, {
-                programming_languages: [],
-                frontend: [],
-                backend: [],
-                databases: [],
-                dev_tools: [],
-                other: [],
-            }, 'No skills found'));
+        return res.status(200).json(
+            new ApiResponse(
+                200,
+                {
+                    programming_languages: [],
+                    frontend: [],
+                    backend: [],
+                    databases: [],
+                    dev_tools: [],
+                    other: [],
+                },
+                'No skills found'
+            )
+        );
     }
 
-    return res
-        .status(200)
-        .json(new ApiResponse(200, skills, 'Skills fetched successfully'));
+    return res.status(200).json(new ApiResponse(200, skills, 'Skills fetched successfully'));
 });
 
 // Update or Create skills (Admin only)
 export const updateSkills = asyncHandler(async (req, res) => {
-    const {
-        programming_languages,
-        frontend,
-        backend,
-        databases,
-        dev_tools,
-        other,
-    } = req.body;
+    const { programming_languages, frontend, backend, databases, dev_tools, other } = req.body;
 
     // Validate that at least one category is provided
     if (!programming_languages && !frontend && !backend && !databases && !dev_tools && !other) {
@@ -44,7 +39,7 @@ export const updateSkills = asyncHandler(async (req, res) => {
     }
 
     // Parse arrays if they are strings
-    const parseSkillArray = (skills) => {
+    const parseSkillArray = skills => {
         if (typeof skills === 'string') {
             try {
                 return JSON.parse(skills);
@@ -56,7 +51,8 @@ export const updateSkills = asyncHandler(async (req, res) => {
     };
 
     const skillsData = {};
-    if (programming_languages) skillsData.programming_languages = parseSkillArray(programming_languages);
+    if (programming_languages)
+        skillsData.programming_languages = parseSkillArray(programming_languages);
     if (frontend) skillsData.frontend = parseSkillArray(frontend);
     if (backend) skillsData.backend = parseSkillArray(backend);
     if (databases) skillsData.databases = parseSkillArray(databases);
@@ -82,9 +78,7 @@ export const updateSkills = asyncHandler(async (req, res) => {
         skills = await Skills.create(skillsData);
     }
 
-    return res
-        .status(200)
-        .json(new ApiResponse(200, skills, 'Skills updated successfully'));
+    return res.status(200).json(new ApiResponse(200, skills, 'Skills updated successfully'));
 });
 
 // Delete all skills (Admin only)
@@ -97,7 +91,5 @@ export const deleteSkills = asyncHandler(async (req, res) => {
 
     await Skills.findByIdAndDelete(skills._id);
 
-    return res
-        .status(200)
-        .json(new ApiResponse(200, {}, 'Skills deleted successfully'));
+    return res.status(200).json(new ApiResponse(200, {}, 'Skills deleted successfully'));
 });
