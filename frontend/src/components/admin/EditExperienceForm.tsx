@@ -44,6 +44,7 @@ const EditExperienceForm = ({ experienceId, onSuccess }: EditExperienceFormProps
             } catch (_error) {
                 alert('Failed to fetch experience');
             } finally {
+                setLoading(false);
             }
         };
 
